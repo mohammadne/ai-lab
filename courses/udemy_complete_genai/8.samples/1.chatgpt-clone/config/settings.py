@@ -5,7 +5,6 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
-
     MONGO_DB_URL: str
     MONGO_DB_NAME: str
     OLLAMA_URL: str

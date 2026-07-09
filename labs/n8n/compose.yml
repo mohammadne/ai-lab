@@ -1,0 +1,28 @@
+services:
+  n8n:
+    container_name: n8n-sandbox
+    image: n8nio/n8n:2.29.8-7786117
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Berlin
+      - GENERIC_TIMEZONE=Europe/Berlin
+      - N8N_EDITOR_BASE_URL=https://n8n.mohammadne.ir/
+      - WEBHOOK_URL=https://n8n.mohammadne.ir/
+      - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  ollama:
+    container_name: ollama
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  n8n_data:
+  ollama_data:

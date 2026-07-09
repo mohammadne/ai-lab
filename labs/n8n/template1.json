@@ -1,0 +1,293 @@
+{
+  "name": "Telegram AI Assistant Router",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ]
+      },
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        -900,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $json.message;\nconst cb = $json.callback_query;\n\nreturn [{\n  json: {\n    chatId: msg?.chat?.id || cb?.message?.chat?.id,\n    text: msg?.text || cb?.data || '',\n    raw: $json\n  }\n}];"
+      },
+      "name": "Normalize Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {},
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.text}}",
+                    "rightValue": "/start",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "conditions": {
+                "options": {},
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.text}}",
+                    "rightValue": "weather",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "conditions": {
+                "options": {},
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.text}}",
+                    "rightValue": "gold",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "conditions": {
+                "options": {},
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.text}}",
+                    "rightValue": "usdt",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "name": "Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        -450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.chatId}}",
+        "text": "Choose service:",
+        "replyMarkup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "🌦 Weather Forecast",
+                "callback_data": "weather"
+              }
+            ],
+            [
+              {
+                "text": "🪙 Gold Price",
+                "callback_data": "gold"
+              }
+            ],
+            [
+              {
+                "text": "💵 USDT Price",
+                "callback_data": "usdt"
+              }
+            ],
+            [
+              {
+                "text": "🤖 AI Chat",
+                "callback_data": "chat"
+              }
+            ]
+          ]
+        }
+      },
+      "name": "Show Menu",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -150,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=35.6892&longitude=51.3890&current=temperature_2m,wind_speed_10m",
+        "options": {}
+      },
+      "name": "Weather API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.chatId}}",
+        "text": "🌦 Weather result:\n{{$json.current.temperature_2m}} °C\nWind: {{$json.current.wind_speed_10m}} km/h"
+      },
+      "name": "Send Weather",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        150,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://milli.gold",
+        "options": {}
+      },
+      "name": "Gold Website",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -100,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.chatId}}",
+        "text": "🪙 Gold price page fetched.\nNeed parser customization based on website HTML."
+      },
+      "name": "Send Gold",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        150,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://abantether.com",
+        "options": {}
+      },
+      "name": "USDT Website",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -100,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.chatId}}",
+        "text": "💵 USDT price page fetched.\nNeed parser customization based on website HTML."
+      },
+      "name": "Send USDT",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        150,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/chat",
+        "jsonBody": true,
+        "bodyParametersJson": "{\n  \"model\": \"qwen3:8b\",\n  \"stream\": false,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"{{$json.text}}\"\n    }\n  ]\n}"
+      },
+      "name": "Ollama Chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -100,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.chatId}}",
+        "text": "={{$json.message.content}}\n\nWhat next?",
+        "replyMarkup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "⬅ Continue",
+                "callback_data": "/start"
+              }
+            ]
+          ]
+        }
+      },
+      "name": "Send AI Answer",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        200,
+        900
+      ]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Input": {
+      "main": [
+        [
+          {
+            "node": "Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

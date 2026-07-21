@@ -1,4 +1,4 @@
-# ML Lab
+# AI Lab
 
 A personal learning lab for exploring **machine learning, deep learning, and AI**. This repository is organized by **concept** (regression, classification, neural networks, LLMs, etc.) to mirror how these topics interconnect.
 
@@ -66,6 +66,7 @@ jupyter notebook foundations/python/1_oop.ipynb
 
 See each topic's `README.md` for curated resources. Popular ones:
 
+- [AI roadmap](https://github.com/rohitg00/ai-engineering-from-scratch)
 - [Google ML Crash Course](https://developers.google.com/machine-learning/crash-course)
 - [deeplearning.ai Specializations](https://learn.deeplearning.ai/)
 - [Hands-On Machine Learning](https://github.com/ageron/handson-ml3) (Aurélien Géron)

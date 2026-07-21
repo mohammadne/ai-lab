@@ -22,6 +22,13 @@ Transpose, inverse, determinant
 Eigenvalues & eigenvectors
 Singular Value Decomposition (SVD)
 
+Especially understand:
+
+Embeddings
+Similarity
+Projection
+Cosine Similarity
+
 - https://www.khanacademy.org/math/linear-algebra
 - [Essence of linear algebra](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
 
@@ -33,8 +40,8 @@ Distributions (Normal, Bernoulli, etc.)
 Bayes theorem
 Likelihood, entropy
 
-- [statistics](https://www.youtube.com/playlist?list=PLblh5JKOoLUK0FLuzwntyYI10UQFUhsY9)
 - [probability course](https://www.probabilitycourse.com/)
+- [statistics](https://www.youtube.com/playlist?list=PLblh5JKOoLUK0FLuzwntyYI10UQFUhsY9)
 - https://www.khanacademy.org/math/statistics-probability
 
 ## Theory of Computation
